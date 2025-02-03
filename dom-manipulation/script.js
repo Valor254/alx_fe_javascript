@@ -32,6 +32,7 @@ async function fetchQuotesFromServer() {
     } catch (error) {
         console.error("Failed to fetch quotes from server:", error);
         showNotification("Failed to fetch quotes from server.", "error");
+        alert("Failed to fetch quotes from the server."); // ALERT added for failure to fetch quotes
     }
 }
 
@@ -46,8 +47,10 @@ function syncQuotes(serverQuotes) {
         saveQuotes(); // Save updated data to local storage
         showNotification("Quotes synced with server!", "success"); // UI notification for data update
         showRandomQuote(); // Display updated quote
+        alert("Quotes have been successfully synced with the server!"); // ALERT added after syncing
     } else {
         showNotification("No changes detected between local and server data.", "info");
+        alert("No changes detected between local and server data."); // ALERT added for no changes detected
     }
 }
 
@@ -65,12 +68,15 @@ async function postQuoteToServer(newQuote) {
         if (response.ok) {
             showNotification("New quote has been posted to the server!", "success"); // UI notification
             fetchQuotesFromServer(); // After posting, fetch and sync data
+            alert("New quote has been successfully posted to the server!"); // ALERT added for successful post
         } else {
             showNotification("Failed to post the quote to the server.", "error");
+            alert("Failed to post the quote to the server."); // ALERT added for failure to post
         }
     } catch (error) {
         console.error("Error posting quote to the server:", error);
         showNotification("Error posting quote to the server.", "error");
+        alert("Error posting quote to the server."); // ALERT added for error posting the quote
     }
 }
 
@@ -81,6 +87,7 @@ function addQuote() {
 
     if (textInput.value.trim() === "" || categoryInput.value.trim() === "") {
         showNotification("Please enter both quote text and category.", "error");
+        alert("Please enter both quote text and category."); // ALERT added for missing input
         return;
     }
 
@@ -95,6 +102,7 @@ function addQuote() {
     categoryInput.value = "";
     showRandomQuote(); // Update the DOM with the new quote
     showNotification("Quote added successfully!", "success");
+    alert("Quote added successfully!"); // ALERT added after adding a new quote
 
     // Post the new quote to the server
     postQuoteToServer(newQuote);
