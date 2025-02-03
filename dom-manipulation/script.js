@@ -31,6 +31,7 @@ async function fetchQuotesFromServer() {
         syncQuotes(serverQuotes);
     } catch (error) {
         console.error("Failed to fetch quotes from server:", error);
+        showNotification("Failed to fetch quotes from server.", "error");
     }
 }
 
@@ -43,10 +44,10 @@ function syncQuotes(serverQuotes) {
         quotes.length = 0; // Clear the local quotes array
         quotes.push(...serverQuotes); // Push new server data
         saveQuotes(); // Save updated data to local storage
-        alert("Quotes have been updated from the server!"); // UI notification for data update
+        showNotification("Quotes synced with server!", "success"); // UI notification for data update
         showRandomQuote(); // Display updated quote
     } else {
-        alert("No changes detected between local and server data.");
+        showNotification("No changes detected between local and server data.", "info");
     }
 }
 
@@ -62,13 +63,14 @@ async function postQuoteToServer(newQuote) {
         });
 
         if (response.ok) {
-            alert("New quote has been posted to the server!"); // UI notification
+            showNotification("New quote has been posted to the server!", "success"); // UI notification
             fetchQuotesFromServer(); // After posting, fetch and sync data
         } else {
-            alert("Failed to post the quote to the server.");
+            showNotification("Failed to post the quote to the server.", "error");
         }
     } catch (error) {
         console.error("Error posting quote to the server:", error);
+        showNotification("Error posting quote to the server.", "error");
     }
 }
 
@@ -78,7 +80,7 @@ function addQuote() {
     const categoryInput = document.getElementById("newQuoteCategory");
 
     if (textInput.value.trim() === "" || categoryInput.value.trim() === "") {
-        alert("Please enter both quote text and category.");
+        showNotification("Please enter both quote text and category.", "error");
         return;
     }
 
@@ -92,7 +94,7 @@ function addQuote() {
     textInput.value = "";
     categoryInput.value = "";
     showRandomQuote(); // Update the DOM with the new quote
-    alert("Quote added successfully!");
+    showNotification("Quote added successfully!", "success");
 
     // Post the new quote to the server
     postQuoteToServer(newQuote);
@@ -100,6 +102,19 @@ function addQuote() {
 
 // Function to sync quotes every 30 seconds (simulating periodic updates from the server)
 setInterval(fetchQuotesFromServer, 30000);
+
+// Function to show notifications on the UI
+function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.classList.add("notification", type);
+    notification.innerText = message;
+    document.body.appendChild(notification);
+
+    // Auto-remove the notification after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
 
 // Initialize the app
 document.addEventListener("DOMContentLoaded", () => {
